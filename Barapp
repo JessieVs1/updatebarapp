@@ -18,91 +18,63 @@
       justify-content: center;
       align-items: flex-start;
       overflow-y: auto;
-      padding: 20px;
     }
     .container, .screen {
       background-color: #ffffff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 24px;
-      text-align: left;
+      padding: 40px;
+      text-align: center;
       width: 100%;
-      max-width: 980px;
-      box-sizing: border-box;
-      position: relative;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+      max-width: 400px;
     }
     h1, h2, h3, h4 {
-      margin: 6px 0 14px 0;
-      font-size: 22px;
+      margin-bottom: 20px;
+      font-size: 24px;
       color: #333;
     }
     .btn {
-      display: inline-block;
-      margin: 6px 6px 6px 0;
-      padding: 10px 14px;
-      font-size: 14px;
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 15px;
+      font-size: 16px;
       border: none;
       border-radius: 8px;
       background-color: #4CAF50;
       color: white;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.3s ease;
     }
-    .btn.secondary { background-color: #6c757d; }
-    .btn.warn { background-color: #dc3545; }
-    .btn:hover { opacity: 0.95; }
-    input[type="text"], input[type="number"], select {
-      padding: 8px;
-      width: 100%;
-      margin: 6px 0 12px 0;
+    .btn:hover {
+      background-color: #45a049;
+    }
+    input[type="text"], input[type="number"] {
+      padding: 10px;
+      width: 80%;
+      margin: 10px 0;
       border-radius: 6px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
     }
     .hidden { display: none; }
     .product, .cart-item {
       margin: 10px 0;
       text-align: left;
-      padding: 10px;
-      border-radius: 8px;
-      background: #fafafa;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
     }
-    .product .meta { flex: 1; }
-    .product .actions { min-width: 180px; text-align: right; }
     .remove-btn {
       color: red;
       margin-left: 10px;
       cursor: pointer;
-      background: none;
-      border: none;
     }
     .add-btn {
       background-color: #007bff;
       border-radius: 6px;
-      padding: 8px 10px;
+      padding: 10px;
       width: auto;
       margin-top: 5px;
-      color: white;
-      border: none;
     }
-    .add-btn:hover { opacity: 0.95; }
-    .qty-controls button {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: none;
-      margin: 0 4px;
-      cursor: pointer;
-      font-weight: bold;
+    .add-btn:hover {
+      background-color: #0069d9;
     }
     #backToTopBtn {
       position: fixed;
@@ -117,221 +89,90 @@
       display: none;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
-    #backToTopBtn:hover { background-color: #45a049; }
-    .top-right {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      font-size: 14px;
-      color: #333;
-      background: rgba(0,0,0,0.03);
-      padding: 6px 10px;
-      border-radius: 8px;
+    #backToTopBtn:hover {
+      background-color: #45a049;
     }
-    .layout-row {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    .col { flex: 1; }
-    .panel { padding: 12px; border-radius: 10px; background: #fff; border: 1px solid #eee; }
-    table { width: 100%; border-collapse: collapse; }
-    table th, table td { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
-    .center { text-align: center; }
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
-      z-index: 1000;
-    }
-    .modal {
-      background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 480px; box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    }
-    @media (max-width: 900px) {
-      .layout-row { flex-direction: column; }
-      .container { padding: 12px; }
+    @media (max-width: 500px) {
+      .container, .screen {
+        padding: 20px;
+        max-width: 95%;
+      }
+      h1, h2, h3 {
+        font-size: 20px;
+      }
+      .btn {
+        padding: 12px;
+        font-size: 14px;
+      }
     }
   </style>
 </head>
-<body>
-  <div class="container" id="app">
-    <!-- app content wordt dynamisch toegevoegd -->
-  </div>
-
+<body style="min-height: 100vh;">
+  <div class="container" id="app" style="overflow-y: auto; max-height: none;"></div>
   <button id="backToTopBtn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">⬆️ Boven</button>
-
-  <!-- Bevestigingsmodal (Ja/Nee) -->
-  <div id="confirmModal" class="modal-backdrop hidden" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-      <h3 id="confirmTitle">Bevestiging</h3>
-      <p id="confirmMessage">Weet je zeker dat je deze actie wilt uitvoeren?</p>
-      <div style="text-align:right; margin-top:12px;">
-        <button class="btn secondary" onclick="closeConfirm(false)">Nee</button>
-        <button class="btn" id="confirmYesBtn" onclick="closeConfirm(true)">Ja</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // Supabase client (zoals in je originele file)
     const supabase = window.supabase.createClient(
       'https://nsevcinmxmaplnpyctht.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZXZjaW5teG1hcGxucHljdGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyOTkxOTAsImV4cCI6MjA2MTg3NTE5MH0.-GrwWMhWxXXZM2zL3S_Zat7GhpvbgEBzBGpKzhy-rcU'
     );
 
     let cart = [];
-    let currentUser = null; // { id, name, code, ... }
-    let lastOrderConfirmResolve = null;
 
-    // --- Confirm modal helpers ---
-    function openConfirm(message) {
-      document.getElementById('confirmMessage').textContent = message;
-      document.getElementById('confirmModal').classList.remove('hidden');
-      return new Promise(resolve => { lastOrderConfirmResolve = resolve; });
-    }
-    function closeConfirm(result) {
-      document.getElementById('confirmModal').classList.add('hidden');
-      if (lastOrderConfirmResolve) {
-        lastOrderConfirmResolve(result);
-        lastOrderConfirmResolve = null;
-      }
-    }
-
-    // --- Render start screen ---
     function renderStartScreen() {
-      currentUser = null;
-      cart = [];
       document.getElementById('app').innerHTML = `
-        <header>
-          <h1>Welkom bij Bestel Beheer App</h1>
-          <div></div>
-        </header>
-        <div class="center">
-          <button class="btn" onclick="promptUserCode()">Bestellen</button>
-          <button class="btn" onclick="promptAdminCode()">Beheer</button>
-        </div>
-        <p style="margin-top:12px; color:#666;">Voer je gebruikerscode in om te bestellen, of gebruik de beheerknop voor admin functies.</p>
+        <h1>Welkom</h1>
+        <button class="btn" onclick="promptUserCode()">Bestellen</button>
+        <button class="btn" onclick="promptAdminCode()">Beheer</button>
       `;
     }
 
-    // --- Login flows ---
     function promptUserCode() {
       const code = prompt("Voer je gebruikerscode in:");
-      if (code) checkUserCode(code.trim());
+      if (code) checkUserCode(code);
     }
 
     async function checkUserCode(code) {
-      try {
-        const { data, error } = await supabase.from('users').select('*').eq('code', code).single();
-        if (error || !data) {
-          alert("Ongeldige gebruikerscode");
-          return;
-        }
-        currentUser = data;
-        await loadOrderScreen(); // laad scherm voor ingelogde gebruiker
-      } catch (err) {
-        console.error(err);
-        alert("Er is iets misgegaan bij het inloggen.");
-      }
+      const { data } = await supabase.from('users').select('*').eq('code', code).single();
+      if (data) loadOrderScreen(code);
+      else alert("Ongeldige gebruikerscode");
     }
 
     function promptAdminCode() {
       const code = prompt("Voer de beheercode in:");
       if (code === 'BHV123') loadAdminScreen();
-      else if (code) alert("Ongeldige beheercode");
+      else alert("Ongeldige beheercode");
     }
 
-    // --- Order screen ---
-    async function loadOrderScreen() {
-      try {
-        const { data: products, error } = await supabase.from('products').select('*').order('name');
-        if (error) throw error;
-        const nameRight = currentUser ? `Ingelogd als: ${escapeHtml(currentUser.name || currentUser.code || 'Onbekend')}` : '';
-        document.getElementById('app').innerHTML = `
-          <div class="top-right">${nameRight}</div>
-          <header>
-            <h2>Bestellen</h2>
-            <div>
-              <button class="btn secondary" onclick="renderStartScreen()">Uitloggen</button>
-            </div>
-          </header>
-          <div class="layout-row">
-            <div class="col panel">
-              <h3>Producten</h3>
-              <div id="productsList">${products.map(p => `
-                <div class="product" id="prod-${p.id}">
-                  <div class="meta">
-                    <strong>${escapeHtml(p.name)}</strong><br>
-                    €${Number(p.price).toFixed(2)} — Voorraad: ${p.stock ?? 0}
-                  </div>
-                  <div class="actions">
-                    <button class="btn add-btn" onclick="addToCart(${p.id}, '${escapeJs(p.name)}', ${Number(p.price)}, ${p.stock ?? 0})">➕ Voeg toe</button>
-                  </div>
-                </div>`).join('')}</div>
-            </div>
-
-            <div class="col panel">
-              <h3>Winkelwagen</h3>
-              <div id="cart" style="min-height:120px;">Winkelwagen is leeg</div>
-              <div style="margin-top:12px;">
-                <strong>Totaal: €<span id="cartTotal">0.00</span></strong>
-              </div>
-              <div style="margin-top:12px;">
-                <button class="btn" onclick="confirmPlaceOrder()">Bevestig bestelling</button>
-                <button class="btn secondary" onclick="cart=[]; showCart();">Leeg winkelwagen</button>
-                <button class="btn secondary" onclick="renderStartScreen()">Terug</button>
-              </div>
-            </div>
-          </div>
-        `;
-        showCart();
-      } catch (err) {
-        console.error(err);
-        alert("Fout bij het laden van producten.");
-      }
-    }
-
-    // --- Cart logic ---
-    function addToCart(productId, name, price, stock) {
-      const existing = cart.find(item => item.productId === productId);
-      if (existing) {
-        // respecteer voorraad
-        if (stock != null && existing.quantity + 1 > stock) {
-          alert('Niet voldoende voorraad.');
-          return;
-        }
-        existing.quantity++;
-      } else {
-        cart.push({ productId, name, price, quantity: 1 });
-      }
+    async function loadOrderScreen(userCode) {
+      const { data: products } = await supabase.from('products').select('*');
+      document.getElementById('app').innerHTML = `
+        <h2>Bestellen</h2>
+        <div>${products.map(p => `
+          <div class="product">
+            <b>${p.name}</b> - €${p.price} (Voorraad: ${p.stock})<br>
+            <button class="btn add-btn" onclick="addToCart('${p.name}', ${p.price}, ${p.id}, '${userCode}')">➕ Voeg toe</button>
+          </div>`).join('')}</div>
+        <h3>Winkelwagen</h3>
+        <div id="cart"></div>
+        <button class="btn" onclick="placeOrder('${userCode}')">Bevestig bestelling</button>
+        <button class="btn" onclick="renderStartScreen()">Terug</button>
+      `;
       showCart();
     }
 
-    function increaseQty(index) {
-      const item = cart[index];
-      if (!item) return;
-      // check voorraad realtime
-      (async () => {
-        try {
-          const { data: product, error } = await supabase.from('products').select('stock').eq('id', item.productId).single();
-          if (error) throw error;
-          if (product && product.stock < item.quantity + 1) {
-            alert('Niet voldoende voorraad.');
-            return;
-          }
-          item.quantity++;
-          showCart();
-        } catch (err) {
-          console.error(err);
-          alert('Fout bij controleren voorraad.');
-        }
-      })();
+    function addToCart(name, price, productId, userCode) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) existing.quantity++;
+      else cart.push({ name, price, productId, quantity: 1 });
+      showCart();
     }
 
-    function decreaseQty(index) {
-      const item = cart[index];
-      if (!item) return;
-      item.quantity--;
-      if (item.quantity <= 0) cart.splice(index, 1);
-      showCart();
+    function showCart() {
+      const div = document.getElementById('cart');
+      if (!div) return;
+      div.innerHTML = cart.map((item, index) =>
+        `${item.name} x ${item.quantity} = €${item.price * item.quantity} <span class="remove-btn" onclick="removeFromCart(${index})">✖</span>`
+      ).join('<br>');
     }
 
     function removeFromCart(index) {
@@ -339,391 +180,135 @@
       showCart();
     }
 
-    function showCart() {
-      const div = document.getElementById('cart');
-      if (!div) return;
-      if (cart.length === 0) {
-        div.innerHTML = '<p>Winkelwagen is leeg</p>';
-        document.getElementById('cartTotal').textContent = '0.00';
-        return;
-      }
-      const rows = cart.map((item, index) => {
-        const lineTotal = (item.price * item.quantity);
-        return `
-          <div class="cart-item">
-            <div style="flex:1">
-              <strong>${escapeHtml(item.name)}</strong><br>
-              €${Number(item.price).toFixed(2)} x ${item.quantity} = €${lineTotal.toFixed(2)}
-            </div>
-            <div class="qty-controls">
-              <button onclick="decreaseQty(${index})" title="Verlaag">－</button>
-              <button onclick="increaseQty(${index})" title="Verhoog">＋</button>
-              <button class="remove-btn" onclick="removeFromCart(${index})" title="Verwijder">✖</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-      div.innerHTML = rows;
-      const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-      document.getElementById('cartTotal').textContent = total.toFixed(2);
-    }
-
-    // --- Place order with confirmation modal ---
-    async function confirmPlaceOrder() {
-      if (!currentUser) { alert('Je moet ingelogd zijn om een bestelling te plaatsen.'); return; }
-      if (cart.length === 0) { alert('Winkelwagen is leeg'); return; }
-      const confirmed = await openConfirm('Weet je zeker dat je de bestelling wilt plaatsen?');
-      if (!confirmed) return;
-      await placeOrder();
-    }
-
-    async function placeOrder() {
-      // Valideer voorraad eerst
-      try {
-        for (const item of cart) {
-          const { data: product, error } = await supabase.from('products').select('*').eq('id', item.productId).single();
-          if (error) { console.error(error); alert('Fout bij controleren voorraad.'); return; }
-          if (!product || product.stock < item.quantity) {
-            alert(`Onvoldoende voorraad voor ${item.name}`);
-            return;
-          }
+    async function placeOrder(userCode) {
+      for (const item of cart) {
+        const { data: product } = await supabase.from('products').select('*').eq('id', item.productId).single();
+        if (!product || product.stock < item.quantity) {
+          alert(`Onvoldoende voorraad voor ${item.name}`);
+          return;
         }
-
-        // Transactie-achtig: update voorraad en voeg orders toe
-        for (const item of cart) {
-          const { data: product } = await supabase.from('products').select('*').eq('id', item.productId).single();
-          const newStock = (product.stock || 0) - item.quantity;
-          await supabase.from('products').update({ stock: newStock }).eq('id', item.productId);
-          // Voeg order-record toe met created_at
-          await supabase.from('orders').insert({
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price,
-            user_code: currentUser.code,
-            created_at: new Date().toISOString()
-          });
-        }
-
-        alert('Bestelling geplaatst!');
-        cart = [];
-        await loadOrderScreen();
-      } catch (err) {
-        console.error(err);
-        alert('Er is iets misgegaan bij het plaatsen van de bestelling.');
+        await supabase.from('products').update({ stock: product.stock - item.quantity }).eq('id', item.productId);
+        await supabase.from('orders').insert({ name: item.name, quantity: item.quantity, price: item.price, user_code: userCode });
       }
+      alert("Bestelling geplaatst!");
+      cart = [];
+      renderStartScreen();
     }
 
-    // --- Admin area ---
     function loadAdminScreen() {
       document.getElementById('app').innerHTML = `
-        <header>
-          <h2>Beheer</h2>
-          <div>
-            <button class="btn secondary" onclick="renderStartScreen()">Terug naar start</button>
-          </div>
-        </header>
-
-        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:8px;">
-          <button class="btn" onclick="showUserManagement()">Gebruikersbeheer</button>
-          <button class="btn" onclick="showProductManagement()">Voorraadbeheer</button>
-          <button class="btn" onclick="showOrderHistory()">Bestelgeschiedenis</button>
-          <button class="btn" onclick="showRevenue()">Omzet</button>
-          <button class="btn" onclick="showMissingGoods()">Verdwenen goederen</button>
-        </div>
-
-        <div id="adminSections">
-          <div id="userManagementSection" class="hidden panel"></div>
-          <div id="productManagementSection" class="hidden panel"></div>
-          <div id="orderHistorySection" class="hidden panel"></div>
-          <div id="revenueSection" class="hidden panel"></div>
-          <div id="missingGoodsSection" class="hidden panel"></div>
-        </div>
+        <h2>Beheer</h2>
+        <button class="btn" onclick="showUserManagement()">Gebruikersbeheer</button>
+        <button class="btn" onclick="showProductManagement()">Voorraadbeheer</button>
+        <button class="btn" onclick="showOrderHistory()">Bestelgeschiedenis</button>
+        <button class="btn" onclick="renderStartScreen()">Terug</button>
+        <div id="userManagementSection" class="hidden"></div>
+        <div id="productManagementSection" class="hidden"></div>
+        <div id="orderHistorySection" class="hidden"></div>
       `;
     }
 
     function toggleSection(sectionId) {
-      const sections = ['userManagementSection', 'productManagementSection', 'orderHistorySection', 'revenueSection', 'missingGoodsSection'];
+      const sections = ['userManagementSection', 'productManagementSection', 'orderHistorySection'];
       sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (id === sectionId) el.classList.toggle('hidden');
-        else el.classList.add('hidden');
+        const section = document.getElementById(id);
+        if (section) section.classList.add('hidden');
       });
+      const target = document.getElementById(sectionId);
+      if (target) target.classList.toggle('hidden');
     }
 
-    // --- Users ---
     async function showUserManagement() {
       toggleSection('userManagementSection');
       const div = document.getElementById('userManagementSection');
       if (div.classList.contains('hidden')) return;
-      try {
-        const { data: users } = await supabase.from('users').select('*').order('name');
-        div.innerHTML = '<h3>Gebruikers</h3>' +
-          (users && users.length ? '<ul>' + users.map(u => `<li>${escapeHtml(u.name)} (${escapeHtml(u.code)}) <button class="btn warn" onclick="deleteUser(${u.id})">Verwijder</button></li>`).join('') + '</ul>' : '<p>Geen gebruikers gevonden</p>') +
-          `<hr>
-          <h4>Nieuwe gebruiker</h4>
-          <input id="newUserName" placeholder="Naam">
-          <input id="newUserCode" placeholder="Code">
-          <button class="btn" onclick="addUser()">Toevoegen</button>
-        `;
-      } catch (err) {
-        console.error(err);
-        div.innerHTML = '<p>Fout bij laden gebruikers</p>';
-      }
+      const { data: users } = await supabase.from('users').select('*');
+      div.innerHTML = '<h3>Gebruikers</h3>' + users.map(u => `${u.name} (${u.code}) <button onclick="deleteUser(${u.id})">Verwijder</button>`).join('<br>') + `
+        <h4>Nieuwe gebruiker</h4>
+        <input id="newUserName" placeholder="Naam"><br>
+        <input id="newUserCode" placeholder="Code"><br>
+        <button class="btn" onclick="addUser()">Toevoegen</button>`;
+    }
+
+    async function showProductManagement() {
+      toggleSection('productManagementSection');
+      const div = document.getElementById('productManagementSection');
+      if (div.classList.contains('hidden')) return;
+      const { data: products } = await supabase.from('products').select('*');
+      div.innerHTML = '<h3>Producten</h3>' + products.map(p => `
+        ${p.name} (Voorraad: ${p.stock})<br>
+        <input type="number" id="stock-${p.id}" value="${p.stock}" style="width:60px"> <button onclick="updateStock(${p.id})">Update voorraad</button><br><br>
+      `).join('') + `
+        <h4>Nieuw product</h4>
+        <input id="newProductName" placeholder="Naam"><br>
+        <input id="newProductPrice" type="number" placeholder="Prijs"><br>
+        <input id="newProductStock" type="number" placeholder="Voorraad"><br>
+        <button class="btn" onclick="addProduct()">Toevoegen</button>`;
+    }
+
+    async function showOrderHistory() {
+      toggleSection('orderHistorySection');
+      const div = document.getElementById('orderHistorySection');
+      if (div.classList.contains('hidden')) return;
+      const { data: orders } = await supabase.from('orders').select('*');
+      const { data: users } = await supabase.from('users').select('*');
+      if (!orders || !users) return;
+      const userMap = Object.fromEntries(users.map(u => [u.code, u.name]));
+      const grouped = orders.reduce((acc, cur) => {
+        if (!acc[cur.user_code]) acc[cur.user_code] = [];
+        acc[cur.user_code].push(cur);
+        return acc;
+      }, {});
+      div.innerHTML = '<h3>Bestelgeschiedenis</h3>' + Object.entries(grouped).map(([code, orders]) => {
+        const totaal = orders.reduce((sum, o) => sum + o.price * o.quantity, 0);
+        const lijst = orders.map(o => `${o.name} x ${o.quantity} = €${o.price * o.quantity}`).join('<br>');
+        return `<b>${userMap[code] || 'Onbekend'} (${code})</b><br>${lijst}<br><b>Totaal: €${totaal}</b><hr>`;
+      }).join('') + `<button class="btn" onclick="confirmClearOrders()">Verwijder alles</button>`;
     }
 
     async function deleteUser(id) {
-      if (!confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?')) return;
       await supabase.from('users').delete().eq('id', id);
       showUserManagement();
     }
 
     async function addUser() {
-      const name = document.getElementById('newUserName').value.trim();
-      const code = document.getElementById('newUserCode').value.trim();
-      if (!name || !code) { alert('Vul naam en code in'); return; }
+      const name = document.getElementById('newUserName').value;
+      const code = document.getElementById('newUserCode').value;
       await supabase.from('users').insert({ name, code });
-      document.getElementById('newUserName').value = '';
-      document.getElementById('newUserCode').value = '';
       showUserManagement();
     }
 
-    // --- Products ---
-    async function showProductManagement() {
-      toggleSection('productManagementSection');
-      const div = document.getElementById('productManagementSection');
-      if (div.classList.contains('hidden')) return;
-      try {
-        const { data: products } = await supabase.from('products').select('*').order('name');
-        div.innerHTML = '<h3>Producten</h3>' + (products && products.length ? '<div>' + products.map(p => `
-          <div style="margin-bottom:10px;">
-            <strong>${escapeHtml(p.name)}</strong> (Voorraad: ${p.stock ?? 0})<br>
-            <input type="number" id="stock-${p.id}" value="${p.stock ?? 0}" style="width:120px; display:inline-block"> 
-            <button class="btn" onclick="updateStock(${p.id})">Update voorraad</button>
-            <button class="btn warn" onclick="deleteProduct(${p.id})">Verwijder</button>
-          </div>
-        `).join('') + '</div>' : '<p>Geen producten</p>') + `
-          <hr>
-          <h4>Nieuw product</h4>
-          <input id="newProductName" placeholder="Naam">
-          <input id="newProductPrice" type="number" placeholder="Prijs">
-          <input id="newProductStock" type="number" placeholder="Voorraad">
-          <button class="btn" onclick="addProduct()">Toevoegen</button>
-        `;
-      } catch (err) {
-        console.error(err);
-        div.innerHTML = '<p>Fout bij laden producten</p>';
-      }
-    }
-
     async function updateStock(id) {
-      const stock = parseInt(document.getElementById(`stock-${id}`).value) || 0;
+      const stock = parseInt(document.getElementById(`stock-${id}`).value);
       await supabase.from('products').update({ stock }).eq('id', id);
       showProductManagement();
     }
 
     async function addProduct() {
-      const name = document.getElementById('newProductName').value.trim();
+      const name = document.getElementById('newProductName').value;
       const price = parseFloat(document.getElementById('newProductPrice').value);
       const stock = parseInt(document.getElementById('newProductStock').value);
-      if (!name || isNaN(price) || isNaN(stock)) { alert('Vul correcte productgegevens in'); return; }
       await supabase.from('products').insert({ name, price, stock });
-      document.getElementById('newProductName').value = '';
-      document.getElementById('newProductPrice').value = '';
-      document.getElementById('newProductStock').value = '';
       showProductManagement();
-    }
-
-    async function deleteProduct(id) {
-      if (!confirm('Weet je zeker dat je dit product wilt verwijderen?')) return;
-      await supabase.from('products').delete().eq('id', id);
-      showProductManagement();
-    }
-
-    // --- Orders / History ---
-    async function showOrderHistory() {
-      toggleSection('orderHistorySection');
-      const div = document.getElementById('orderHistorySection');
-      if (div.classList.contains('hidden')) return;
-      try {
-        const { data: orders } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-        const { data: users } = await supabase.from('users').select('*');
-        const userMap = (users || []).reduce((acc, u) => { acc[u.code] = u.name; return acc; }, {});
-        if (!orders || orders.length === 0) {
-          div.innerHTML = '<h3>Bestelgeschiedenis</h3><p>Geen bestellingen</p>';
-          return;
-        }
-        // Groepeer per gebruiker code en toon totalen
-        const grouped = orders.reduce((acc, o) => {
-          if (!acc[o.user_code]) acc[o.user_code] = [];
-          acc[o.user_code].push(o);
-          return acc;
-        }, {});
-        div.innerHTML = '<h3>Bestelgeschiedenis</h3>' + Object.entries(grouped).map(([code, ords]) => {
-          const totaal = ords.reduce((sum,o) => sum + (o.price * o.quantity), 0);
-          const lijst = ords.map(o => `${escapeHtml(o.name)} x ${o.quantity} = €${(o.price * o.quantity).toFixed(2)} (${formatDate(o.created_at)})`).join('<br>');
-          return `<b>${escapeHtml(userMap[code] || 'Onbekend')} (${escapeHtml(code)})</b><br>${lijst}<br><b>Totaal: €${totaal.toFixed(2)}</b><hr>`;
-        }).join('') + `<button class="btn warn" onclick="confirmClearOrders()">Verwijder alles</button>`;
-      } catch (err) {
-        console.error(err);
-        div.innerHTML = '<p>Fout bij laden bestellingen</p>';
-      }
     }
 
     async function confirmClearOrders() {
-      if (confirm("Weet je zeker dat je alle bestellingen wilt verwijderen? Dit is onomkeerbaar.")) {
+      if (confirm("Weet je zeker dat je alle bestellingen wilt verwijderen?")) {
         await supabase.from('orders').delete().neq('id', 0);
         showOrderHistory();
       }
     }
 
-    // --- Revenue (Omzet) per maand ---
-    async function showRevenue() {
-      toggleSection('revenueSection');
-      const div = document.getElementById('revenueSection');
-      if (div.classList.contains('hidden')) return;
-      try {
-        const { data: orders } = await supabase.from('orders').select('*').order('created_at', { ascending: true });
-        if (!orders || orders.length === 0) {
-          div.innerHTML = '<h3>Omzet</h3><p>Geen bestellingen om omzet uit te berekenen</p>';
-          return;
-        }
-        // Groepeer op jaar-maand
-        const monthly = {};
-        for (const o of orders) {
-          const dt = new Date(o.created_at || o.created_at);
-          // fallback
-          if (isNaN(dt)) continue;
-          const key = `${dt.getFullYear()}-${(dt.getMonth()+1).toString().padStart(2,'0')}`;
-          monthly[key] = (monthly[key] || 0) + (o.price * o.quantity);
-        }
-        // Sorteer keys aflopend
-        const rows = Object.keys(monthly).sort((a,b)=>b.localeCompare(a)).map(k => {
-          const [y,m] = k.split('-');
-          return `<tr><td>${monthName(parseInt(m))} ${y}</td><td>€${monthly[k].toFixed(2)}</td></tr>`;
-        }).join('');
-        div.innerHTML = `<h3>Omzet per maand</h3>
-          <table>
-            <thead><tr><th>Maand</th><th>Omzet</th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        `;
-      } catch (err) {
-        console.error(err);
-        div.innerHTML = '<p>Fout bij berekenen omzet</p>';
-      }
-    }
+    renderStartScreen();
 
-    // --- Missing goods (verdwenen goederen) ---
-    async function showMissingGoods() {
-      toggleSection('missingGoodsSection');
-      const div = document.getElementById('missingGoodsSection');
-      if (div.classList.contains('hidden')) return;
-      try {
-        const { data: products } = await supabase.from('products').select('*').order('name');
-        // probeer lijst van missing_goods op te halen (optioneel)
-        let missing = [];
-        try {
-          const res = await supabase.from('missing_goods').select('*').order('created_at', { ascending: false });
-          if (!res.error) missing = res.data || [];
-        } catch(e){ /* niet kritisch */ }
-
-        div.innerHTML = `<h3>Verdwenen goederen registreren</h3>
-          <label>Product</label>
-          <select id="missingProductSelect">${products.map(p => `<option value="${p.id}">${escapeHtml(p.name)} (Voorraad: ${p.stock ?? 0})</option>`).join('')}</select>
-          <label>Aantal verdwenen</label>
-          <input id="missingQty" type="number" value="1" min="1">
-          <label>Opmerking (optioneel)</label>
-          <input id="missingNote" type="text" placeholder="Bijv. beschadigd / zoekgeraakt">
-          <div style="margin-top:8px;">
-            <button class="btn" onclick="registerMissingGoods()">Registreer verdwenen goederen</button>
-          </div>
-          <hr>
-          <h4>Recente meldingen</h4>
-          <div id="missingList">${missing.length ? missing.map(m => {
-            const when = formatDate(m.created_at);
-            return `<div style="margin-bottom:8px;"><strong>${escapeHtml(m.product_name || m.product_id)}</strong> — ${m.quantity} — ${when} ${m.note ? ' — ' + escapeHtml(m.note) : ''}</div>`;
-          }).join('') : '<p>Geen meldingen</p>'}</div>
-        `;
-      } catch (err) {
-        console.error(err);
-        div.innerHTML = '<p>Fout bij laden ontbrekende producten</p>';
-      }
-    }
-
-    async function registerMissingGoods() {
-      const productId = parseInt(document.getElementById('missingProductSelect').value);
-      const qty = parseInt(document.getElementById('missingQty').value) || 0;
-      const note = document.getElementById('missingNote').value.trim();
-      if (!productId || qty <= 0) { alert('Kies product en geef een geldig aantal'); return; }
-      try {
-        // haal product op
-        const { data: product, error } = await supabase.from('products').select('*').eq('id', productId).single();
-        if (error) throw error;
-        const newStock = (product.stock || 0) - qty;
-        if (newStock < 0) {
-          if (!confirm('Voorraad zou onder 0 komen. Wil je toch doorgaan?')) return;
-        }
-        // update voorraad
-        await supabase.from('products').update({ stock: newStock }).eq('id', productId);
-        // insert in missing_goods (probeer)
-        try {
-          await supabase.from('missing_goods').insert({
-            product_id: productId,
-            product_name: product.name,
-            quantity: qty,
-            note: note,
-            reported_by: 'admin',
-            created_at: new Date().toISOString()
-          });
-        } catch (e) {
-          console.warn('Kon missing_goods niet schrijven (missende tabel?)', e);
-          // niet kritisch — voorraad is wel geupdate
-        }
-        alert('Verdwenen goederen geregistreerd en voorraad aangepast.');
-        showMissingGoods();
-        showProductManagement();
-      } catch (err) {
-        console.error(err);
-        alert('Fout bij registreren verdwenen goederen');
-      }
-    }
-
-    // --- Helpers ---
-    function escapeHtml(str) {
-      if (str == null) return '';
-      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-    }
-    // escape voor inlined onclick strings
-    function escapeJs(str) {
-      if (str == null) return '';
-      return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
-    }
-    function formatDate(d) {
-      if (!d) return '';
-      const dt = new Date(d);
-      if (isNaN(dt)) return d;
-      return dt.toLocaleString('nl-NL', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
-    }
-    function monthName(m) {
-      const names = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
-      return names[m-1] || m;
-    }
-
-    // Back to top show/hide
     window.onscroll = function() {
       const btn = document.getElementById("backToTopBtn");
-      if (!btn) return;
       if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
         btn.style.display = "block";
       } else {
         btn.style.display = "none";
       }
     };
-
-    // Start app
-    renderStartScreen();
-
   </script>
 </body>
 </html>
