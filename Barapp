@@ -415,7 +415,9 @@
 
     // --- Admin area ---
     function loadAdminScreen() {
+      const nameRight = currentUser ? `Ingelogd als: ${escapeHtml(currentUser.name || currentUser.code || 'Onbekend')}` : 'Beheerder';
       document.getElementById('app').innerHTML = `
+        <div class="top-right">${nameRight}</div>
         <header>
           <h2>Beheer</h2>
           <div>
@@ -602,16 +604,49 @@
           const [y,m] = k.split('-');
           return `<tr><td>${monthName(parseInt(m))} ${y}</td><td>€${monthly[k].toFixed(2)}</td></tr>`;
         }).join('');
+        const csv = generateMonthlyCsv(monthly);
         div.innerHTML = `<h3>Omzet per maand</h3>
+          <div style="margin-bottom:8px;">
+            <button class="btn" onclick="downloadCsv('omzet_per_maand.csv', generateMonthlyCsv(${JSON.stringify({})}))" id="revenueCsvBtn">Download CSV</button>
+          </div>
           <table>
             <thead><tr><th>Maand</th><th>Omzet</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
         `;
+        // Zet correcte CSV data op de knop door onclick bij te werken
+        const btn = document.getElementById('revenueCsvBtn');
+        if (btn) {
+          btn.onclick = () => downloadCsv('omzet_per_maand.csv', generateMonthlyCsv(monthly));
+        }
       } catch (err) {
         console.error(err);
         div.innerHTML = '<p>Fout bij berekenen omzet</p>';
       }
+    }
+
+    function generateMonthlyCsv(monthlyObj) {
+      const header = 'Maand,Omzet\n';
+      const lines = Object.keys(monthlyObj)
+        .sort()
+        .map(k => {
+          const [y,m] = k.split('-');
+          const label = `${monthName(parseInt(m))} ${y}`;
+          return `${label},${monthlyObj[k].toFixed(2)}`;
+        }).join('\n');
+      return header + lines + (lines ? '\n' : '');
+    }
+
+    function downloadCsv(filename, csvContent) {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     }
 
     // --- Missing goods (verdwenen goederen) ---
